@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "user-avatar",
+      "description": "User avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1693039537350-3bba6975add7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBmYWNlfGVufDB8fHx8MTc2MTI5MjYxM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person face"
+    },
+    {
+      "id": "content-1",
+      "description": "Content thumbnail 1",
+      "imageUrl": "https://images.unsplash.com/photo-1604871000636-074fa5117945?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhYnN0cmFjdCUyMGFydHxlbnwwfHx8fDE3NjEyOTIwMzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract art"
+    },
+    {
+      "id": "content-2",
+      "description": "Content thumbnail 2",
+      "imageUrl": "https://images.unsplash.com/photo-1704925052413-f4b9a3d467f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjaXR5c2NhcGUlMjBuaWdodHxlbnwwfHx8fDE3NjEzMTA0ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cityscape night"
+    },
+    {
+      "id": "content-3",
+      "description": "Content thumbnail 3",
+      "imageUrl": "https://images.unsplash.com/39/wdXqHcTwSTmLuKOGz92L_Landscape.jpg?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxuYXR1cmUlMjBsYW5kc2NhcGV8ZW58MHx8fHwxNzYxMjY3MjI5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "nature landscape"
+    },
+    {
+      "id": "content-4",
+      "description": "Content thumbnail 4",
+      "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx0ZWNoJTIwcHJvZHVjdHxlbnwwfHx8fDE3NjEyOTQ3Nzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tech product"
+    }
+  ]
 }
