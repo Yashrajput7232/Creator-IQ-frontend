@@ -1,0 +1,169 @@
+/**
+ * @fileoverview Firestore Security Rules for CreatorIQ.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model. Each creator's data is stored
+ * under their own user ID, ensuring that only the authenticated user can access
+ * their own data.
+ *
+ * Data Structure:
+ * All data is nested under /creators/{creatorId}, where creatorId is the Firebase
+ * Auth UID. Subcollections under this path store associated data like social media
+ * accounts, content insights, and deals.
+ *
+ * Key Security Decisions:
+ * - User data is private and only accessible to the authenticated user.
+ * - List operations are restricted to the owner for user-scoped subcollections.
+ * - Schema validation is relaxed to allow for rapid prototyping, except where it
+ *   is critical for authorization (e.g., creatorId consistency).
+ * - Authentication is required for all operations except where explicitly noted.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Protects the /creators collection, ensuring only the owner can read/write their profile.
+     * @path /creators/{creatorId}
+     * @allow (create) - Authenticated user creates their own profile with matching UID.
+     * @allow (get, update, delete) - Authenticated user accesses their own profile using their UID.
+     * @deny (create, get, update, delete) - Any unauthenticated user attempts to access creator profiles.
+     * @principle Enforces document ownership for writes.
+     */
+    match /creators/{creatorId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(creatorId);
+      allow list: if false;
+
+      allow create: if isOwner(creatorId) && request.resource.data.id == creatorId;
+      allow update: if isExistingOwner(creatorId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(creatorId);
+    }
+
+    /**
+     * @description Protects the /creators/{creatorId}/instagramAccounts collection, ensuring only the owner can read/write.
+     * @path /creators/{creatorId}/instagramAccounts/{instagramAccountId}
+     * @allow (create) - Authenticated user creates their own Instagram account.
+     * @allow (get, update, delete) - Authenticated user accesses their own Instagram account.
+     * @deny (create, get, update, delete) - Any unauthenticated user attempts to access Instagram accounts.
+     * @principle Enforces document ownership for writes.
+     */
+    match /creators/{creatorId}/instagramAccounts/{instagramAccountId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(creatorId);
+      allow list: if isOwner(creatorId);
+
+      allow create: if isOwner(creatorId);
+      allow update: if isExistingOwner(creatorId);
+      allow delete: if isExistingOwner(creatorId);
+    }
+
+    /**
+     * @description Protects the /creators/{creatorId}/youtubeAccounts collection, ensuring only the owner can read/write.
+     * @path /creators/{creatorId}/youtubeAccounts/{youtubeAccountId}
+     * @allow (create) - Authenticated user creates their own YouTube account.
+     * @allow (get, update, delete) - Authenticated user accesses their own YouTube account.
+     * @deny (create, get, update, delete) - Any unauthenticated user attempts to access YouTube accounts.
+     * @principle Enforces document ownership for writes.
+     */
+    match /creators/{creatorId}/youtubeAccounts/{youtubeAccountId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(creatorId);
+      allow list: if isOwner(creatorId);
+
+      allow create: if isOwner(creatorId);
+      allow update: if isExistingOwner(creatorId);
+      allow delete: if isExistingOwner(creatorId);
+    }
+
+    /**
+     * @description Protects the /creators/{creatorId}/tiktokAccounts collection, ensuring only the owner can read/write.
+     * @path /creators/{creatorId}/tiktokAccounts/{tiktokAccountId}
+     * @allow (create) - Authenticated user creates their own TikTok account.
+     * @allow (get, update, delete) - Authenticated user accesses their own TikTok account.
+     * @deny (create, get, update, delete) - Any unauthenticated user attempts to access TikTok accounts.
+     * @principle Enforces document ownership for writes.
+     */
+    match /creators/{creatorId}/tiktokAccounts/{tiktokAccountId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(creatorId);
+      allow list: if isOwner(creatorId);
+
+      allow create: if isOwner(creatorId);
+      allow update: if isExistingOwner(creatorId);
+      allow delete: if isExistingOwner(creatorId);
+    }
+
+    /**
+     * @description Protects the /creators/{creatorId}/contentInsights collection, ensuring only the owner can read/write.
+     * @path /creators/{creatorId}/contentInsights/{contentInsightId}
+     * @allow (create) - Authenticated user creates their own ContentInsight.
+     * @allow (get, update, delete) - Authenticated user accesses their own ContentInsight.
+     * @deny (create, get, update, delete) - Any unauthenticated user attempts to access ContentInsight.
+     * @principle Enforces document ownership for writes.
+     */
+    match /creators/{creatorId}/contentInsights/{contentInsightId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(creatorId);
+      allow list: if isOwner(creatorId);
+
+      allow create: if isOwner(creatorId);
+      allow update: if isExistingOwner(creatorId);
+      allow delete: if isExistingOwner(creatorId);
+    }
+
+    /**
+     * @description Protects the /creators/{creatorId}/deals collection, ensuring only the owner can read/write.
+     * @path /creators/{creatorId}/deals/{dealId}
+     * @allow (create) - Authenticated user creates their own Deal.
+     * @allow (get, update, delete) - Authenticated user accesses their own Deal.
+     * @deny (create, get, update, delete) - Any unauthenticated user attempts to access Deal.
+     * @principle Enforces document ownership for writes.
+     */
+    match /creators/{creatorId}/deals/{dealId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(creatorId);
+      allow list: if isOwner(creatorId);
+
+      allow create: if isOwner(creatorId);
+      allow update: if isExistingOwner(creatorId);
+      allow delete: if isExistingOwner(creatorId);
+    }
+  }
+}

@@ -1,0 +1,365 @@
+{
+  "entities": {
+    "Creator": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Creator",
+      "type": "object",
+      "description": "Represents a content creator using the platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Creator entity."
+        },
+        "googleId": {
+          "type": "string",
+          "description": "Google ID of the creator for authentication purposes."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the creator.",
+          "format": "email"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name of the creator."
+        },
+        "profilePicture": {
+          "type": "string",
+          "description": "URL of the creator's profile picture.",
+          "format": "uri"
+        },
+        "instagramAccountId": {
+          "type": "string",
+          "description": "Reference to InstagramAccount. (Relationship: Creator 1:1 InstagramAccount)"
+        },
+        "youtubeAccountId": {
+          "type": "string",
+          "description": "Reference to YoutubeAccount. (Relationship: Creator 1:1 YoutubeAccount)"
+        },
+        "tiktokAccountId": {
+          "type": "string",
+          "description": "Reference to TiktokAccount. (Relationship: Creator 1:1 TiktokAccount)"
+        }
+      },
+      "required": [
+        "id",
+        "googleId",
+        "email",
+        "displayName"
+      ]
+    },
+    "InstagramAccount": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "InstagramAccount",
+      "type": "object",
+      "description": "Represents an Instagram account linked to a creator.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the InstagramAccount entity."
+        },
+        "creatorId": {
+          "type": "string",
+          "description": "Reference to Creator. (Relationship: Creator 1:1 InstagramAccount)"
+        },
+        "username": {
+          "type": "string",
+          "description": "Username of the Instagram account."
+        },
+        "followers": {
+          "type": "number",
+          "description": "Number of followers on the Instagram account."
+        }
+      },
+      "required": [
+        "id",
+        "creatorId",
+        "username",
+        "followers"
+      ]
+    },
+    "YoutubeAccount": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "YoutubeAccount",
+      "type": "object",
+      "description": "Represents a YouTube account linked to a creator.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the YoutubeAccount entity."
+        },
+        "creatorId": {
+          "type": "string",
+          "description": "Reference to Creator. (Relationship: Creator 1:1 YoutubeAccount)"
+        },
+        "channelName": {
+          "type": "string",
+          "description": "Name of the YouTube channel."
+        },
+        "subscribers": {
+          "type": "number",
+          "description": "Number of subscribers to the YouTube channel."
+        }
+      },
+      "required": [
+        "id",
+        "creatorId",
+        "channelName",
+        "subscribers"
+      ]
+    },
+    "TiktokAccount": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "TiktokAccount",
+      "type": "object",
+      "description": "Represents a TikTok account linked to a creator.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the TiktokAccount entity."
+        },
+        "creatorId": {
+          "type": "string",
+          "description": "Reference to Creator. (Relationship: Creator 1:1 TiktokAccount)"
+        },
+        "username": {
+          "type": "string",
+          "description": "Username of the TikTok account."
+        },
+        "followers": {
+          "type": "number",
+          "description": "Number of followers on the TikTok account."
+        }
+      },
+      "required": [
+        "id",
+        "creatorId",
+        "username",
+        "followers"
+      ]
+    },
+    "ContentInsight": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ContentInsight",
+      "type": "object",
+      "description": "Stores insights related to a specific piece of content.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ContentInsight entity."
+        },
+        "creatorId": {
+          "type": "string",
+          "description": "Reference to Creator. (Relationship: Creator 1:N ContentInsight)"
+        },
+        "platform": {
+          "type": "string",
+          "description": "Platform where the content was posted (e.g., Instagram, YouTube, TikTok)."
+        },
+        "contentId": {
+          "type": "string",
+          "description": "Identifier of the content on the respective platform."
+        },
+        "views": {
+          "type": "number",
+          "description": "Number of views the content received."
+        },
+        "likes": {
+          "type": "number",
+          "description": "Number of likes the content received."
+        },
+        "aiScore": {
+          "type": "number",
+          "description": "AI-generated score for the content's performance."
+        },
+        "aiRecommendations": {
+          "type": "array",
+          "description": "AI-generated recommendations for improving content performance.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "creatorId",
+        "platform",
+        "contentId",
+        "views",
+        "likes"
+      ]
+    },
+    "Deal": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Deal",
+      "type": "object",
+      "description": "Represents a brand deal or campaign a creator is participating in.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Deal entity."
+        },
+        "creatorId": {
+          "type": "string",
+          "description": "Reference to Creator. (Relationship: Creator 1:N Deal)"
+        },
+        "brandName": {
+          "type": "string",
+          "description": "Name of the brand the deal is with."
+        },
+        "dealName": {
+          "type": "string",
+          "description": "Descriptive name for the deal."
+        },
+        "deadline": {
+          "type": "string",
+          "description": "Deadline for the deal deliverables.",
+          "format": "date-time"
+        },
+        "invoiceAmount": {
+          "type": "number",
+          "description": "Amount invoiced for the deal."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes or details about the deal."
+        }
+      },
+      "required": [
+        "id",
+        "creatorId",
+        "brandName",
+        "dealName",
+        "deadline",
+        "invoiceAmount"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/creators/{creatorId}",
+        "definition": {
+          "entityName": "Creator",
+          "schema": {
+            "$ref": "#/backend/entities/Creator"
+          },
+          "description": "Stores creator profiles, using the Firebase Auth UID as the document ID. This enables path-based ownership for all subcollections. The 'creatorId' parameter is the Firebase Auth UID.",
+          "params": [
+            {
+              "name": "creatorId",
+              "description": "The Firebase Auth UID of the creator."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/creators/{creatorId}/instagramAccounts/{instagramAccountId}",
+        "definition": {
+          "entityName": "InstagramAccount",
+          "schema": {
+            "$ref": "#/backend/entities/InstagramAccount"
+          },
+          "description": "Stores Instagram account information for each creator. Path-based ownership is enforced via the 'creatorId' parameter.",
+          "params": [
+            {
+              "name": "creatorId",
+              "description": "The Firebase Auth UID of the creator who owns the Instagram account."
+            },
+            {
+              "name": "instagramAccountId",
+              "description": "The unique ID of the Instagram account."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/creators/{creatorId}/youtubeAccounts/{youtubeAccountId}",
+        "definition": {
+          "entityName": "YoutubeAccount",
+          "schema": {
+            "$ref": "#/backend/entities/YoutubeAccount"
+          },
+          "description": "Stores YouTube account information for each creator. Path-based ownership is enforced via the 'creatorId' parameter.",
+          "params": [
+            {
+              "name": "creatorId",
+              "description": "The Firebase Auth UID of the creator who owns the YouTube account."
+            },
+            {
+              "name": "youtubeAccountId",
+              "description": "The unique ID of the YouTube account."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/creators/{creatorId}/tiktokAccounts/{tiktokAccountId}",
+        "definition": {
+          "entityName": "TiktokAccount",
+          "schema": {
+            "$ref": "#/backend/entities/TiktokAccount"
+          },
+          "description": "Stores TikTok account information for each creator. Path-based ownership is enforced via the 'creatorId' parameter.",
+          "params": [
+            {
+              "name": "creatorId",
+              "description": "The Firebase Auth UID of the creator who owns the TikTok account."
+            },
+            {
+              "name": "tiktokAccountId",
+              "description": "The unique ID of the TikTok account."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/creators/{creatorId}/contentInsights/{contentInsightId}",
+        "definition": {
+          "entityName": "ContentInsight",
+          "schema": {
+            "$ref": "#/backend/entities/ContentInsight"
+          },
+          "description": "Stores content insights for each creator. Path-based ownership is enforced via the 'creatorId' parameter.",
+          "params": [
+            {
+              "name": "creatorId",
+              "description": "The Firebase Auth UID of the creator who owns the content insight."
+            },
+            {
+              "name": "contentInsightId",
+              "description": "The unique ID of the content insight."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/creators/{creatorId}/deals/{dealId}",
+        "definition": {
+          "entityName": "Deal",
+          "schema": {
+            "$ref": "#/backend/entities/Deal"
+          },
+          "description": "Stores deal information for each creator. Path-based ownership is enforced via the 'creatorId' parameter.",
+          "params": [
+            {
+              "name": "creatorId",
+              "description": "The Firebase Auth UID of the creator who owns the deal."
+            },
+            {
+              "name": "dealId",
+              "description": "The unique ID of the deal."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to support the CreatorIQ dashboard application, focusing on secure access, scalability, and maintainability. The structure is built around user-owned data and utilizes path-based ownership for most entities. This approach ensures that security rules are straightforward and efficient. Each creator's data (Instagram, YouTube, and TikTok accounts, along with associated content insights and deals) is stored under their respective user ID, facilitating easy access control. This structure supports Authorization Independence by ensuring that access control is based solely on the user's ID and the document's path, avoiding complex `get()` calls in security rules. It also supports the QAPs because list operations can be secured based on path-based ownership.\n\nAuthentication is handled using Google Auth as requested, securing the Creator documents via their unique user ID."
+  }
+}
