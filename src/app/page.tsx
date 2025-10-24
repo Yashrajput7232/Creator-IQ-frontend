@@ -4,7 +4,9 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth, useUser } from '@/firebase';
-import { GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithRedirect, getRedirectResult } from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { useFirestore } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CreatorIQLogo, GoogleIcon } from '@/components/icons';
@@ -12,16 +14,46 @@ import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const auth = useAuth();
+  const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
+    if (!isUserLoading && user) {
       router.push('/dashboard');
     }
-  }, [user, router]);
+  }, [user, isUserLoading, router]);
+
+  useEffect(() => {
+    const handleRedirect = async () => {
+      if (!auth) return;
+      try {
+        const result = await getRedirectResult(auth);
+        if (result && result.user && firestore) {
+          const userRef = doc(firestore, 'creators', result.user.uid);
+          const userDoc = await getDoc(userRef);
+          if (!userDoc.exists()) {
+            // New user, create a document
+            await setDoc(userRef, {
+              id: result.user.uid,
+              googleId: result.user.providerData.find(p => p.providerId === 'google.com')?.uid,
+              email: result.user.email,
+              displayName: result.user.displayName,
+              profilePicture: result.user.photoURL,
+            });
+          }
+          router.push('/dashboard');
+        }
+      } catch (error) {
+        console.error('Error handling redirect result:', error);
+      }
+    };
+    handleRedirect();
+  }, [auth, firestore, router]);
+
 
   const handleSignInWithGoogle = async () => {
+    if (!auth) return;
     const provider = new GoogleAuthProvider();
     try {
       await signInWithRedirect(auth, provider);

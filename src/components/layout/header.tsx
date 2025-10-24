@@ -1,3 +1,4 @@
+
 'use client';
 
 import { usePathname } from 'next/navigation';
@@ -12,9 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bell, Search } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { useAuth } from '@/firebase';
+import { Bell } from 'lucide-react';
+import { useAuth, useUser } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -30,14 +30,24 @@ const pageTitles: { [key: string]: string } = {
 
 export default function Header() {
   const pathname = usePathname();
-  const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
+  const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
 
   const handleSignOut = async () => {
+    if (!auth) return;
     await signOut(auth);
     router.push('/');
   };
+
+  const getInitials = (name?: string | null) => {
+    if (!name) return 'U';
+    const names = name.split(' ');
+    if (names.length > 1) {
+      return `${names[0][0]}${names[names.length - 1][0]}`;
+    }
+    return name[0];
+  }
 
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6">
@@ -57,13 +67,13 @@ export default function Header() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={userAvatar?.imageUrl} alt="User Avatar" data-ai-hint={userAvatar?.imageHint} />
-                <AvatarFallback>U</AvatarFallback>
+                <AvatarImage src={user?.photoURL ?? undefined} alt={user?.displayName ?? 'User Avatar'} />
+                <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>{user?.displayName || 'My Account'}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <Link href="/dashboard/settings" passHref>
               <DropdownMenuItem>Settings</DropdownMenuItem>
