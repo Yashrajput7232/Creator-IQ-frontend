@@ -26,6 +26,7 @@ const pageTitles: { [key: string]: string } = {
   '/dashboard/brand-readiness': 'Brand Readiness',
   '/dashboard/deals': 'Deal Tracker',
   '/dashboard/settings': 'Settings',
+  '/dashboard/competitors': 'Find Competitor',
 };
 
 export default function Header() {

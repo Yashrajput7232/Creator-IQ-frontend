@@ -17,6 +17,7 @@ import {
   Handshake,
   Settings,
   CircleHelp,
+  Users,
 } from 'lucide-react';
 import { CreatorIQLogo } from '@/components/icons';
 import { usePathname } from 'next/navigation';
@@ -29,6 +30,7 @@ const navItems = [
   { href: '/dashboard/valuation', icon: DollarSign, label: 'Valuation' },
   { href: '/dashboard/brand-readiness', icon: Gauge, label: 'Brand Readiness' },
   { href: '/dashboard/deals', icon: Handshake, label: 'Deal Tracker' },
+  { href: '/dashboard/competitors', icon: Users, label: 'Find Competitor' },
 ];
 
 const bottomNavItems = [
