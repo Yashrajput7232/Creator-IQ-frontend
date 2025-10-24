@@ -5,18 +5,17 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth, useUser } from '@/firebase';
 import { GoogleAuthProvider, signInWithRedirect, getRedirectResult } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { useFirestore } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CreatorIQLogo, GoogleIcon } from '@/components/icons';
 import { Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function LoginPage() {
   const auth = useAuth();
-  const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!isUserLoading && user) {
@@ -29,27 +28,20 @@ export default function LoginPage() {
       if (!auth) return;
       try {
         const result = await getRedirectResult(auth);
-        if (result && result.user && firestore) {
-          const userRef = doc(firestore, 'creators', result.user.uid);
-          const userDoc = await getDoc(userRef);
-          if (!userDoc.exists()) {
-            // New user, create a document
-            await setDoc(userRef, {
-              id: result.user.uid,
-              googleId: result.user.providerData.find(p => p.providerId === 'google.com')?.uid,
-              email: result.user.email,
-              displayName: result.user.displayName,
-              profilePicture: result.user.photoURL,
-            });
-          }
+        if (result && result.user) {
           router.push('/dashboard');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error handling redirect result:', error);
+        toast({
+            title: 'Sign-in Failed',
+            description: error.message || 'An unknown error occurred during sign-in.',
+            variant: 'destructive',
+        });
       }
     };
     handleRedirect();
-  }, [auth, firestore, router]);
+  }, [auth, router, toast]);
 
 
   const handleSignInWithGoogle = async () => {
@@ -59,6 +51,11 @@ export default function LoginPage() {
       await signInWithRedirect(auth, provider);
     } catch (error) {
       console.error('Error signing in with Google', error);
+      toast({
+        title: 'Sign-in Error',
+        description: 'Could not start the sign-in process. Please try again.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -72,15 +69,15 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-sm shadow-lg">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex items-center gap-2">
+          <div className="mx-auto mb-4 flex items-center justify-center gap-2">
             <CreatorIQLogo />
             <CardTitle className="font-headline text-3xl">CreatorIQ</CardTitle>
           </div>
           <CardDescription>
-            Sign in to connect your accounts
+            Know your worth. Grow your earnings.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
