@@ -1,103 +1,34 @@
 'use client';
 
-import { useEffect } from 'react';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useAuth } from '@/firebase/provider';
+import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
-import { useAuth, useUser } from '@/firebase';
-import { GoogleAuthProvider, signInWithRedirect, getRedirectResult } from 'firebase/auth';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CreatorIQLogo, GoogleIcon } from '@/components/icons';
-import { Loader2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useEffect } from 'react';
 
 export default function LoginPage() {
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
   const router = useRouter();
-  const { toast } = useToast();
 
   useEffect(() => {
     if (!isUserLoading && user) {
-      console.log('User is logged in, redirecting to dashboard.');
       router.push('/dashboard');
     }
   }, [user, isUserLoading, router]);
 
-  useEffect(() => {
-    const handleRedirect = async () => {
-      if (!auth || isUserLoading || user) return;
-      console.log('Checking for Google sign-in redirect result...');
-      try {
-        const result = await getRedirectResult(auth);
-        if (result && result.user) {
-          console.log('Sign-in via redirect successful for:', result.user.displayName);
-          // The other useEffect will handle the redirect once the user state is updated by the onAuthStateChanged listener.
-        } else {
-            console.log('No active redirect operation found.');
-        }
-      } catch (error: any) {
-        console.error('Error handling redirect result:', error);
-        toast({
-            title: 'Sign-in Failed',
-            description: error.message || 'An unknown error occurred during sign-in.',
-            variant: 'destructive',
-        });
-      }
-    };
-    
-    handleRedirect();
-  }, [auth, router, toast, isUserLoading, user]);
-
-
-  const handleSignInWithGoogle = async () => {
-    if (!auth) return;
-    console.log('Starting Google sign-in process...');
+  const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
-    try {
-      await signInWithRedirect(auth, provider);
-    } catch (error) {
-      console.error('Error starting Google sign-in redirect:', error);
-      toast({
-        title: 'Sign-in Error',
-        description: 'Could not start the sign-in process. Please try again.',
-        variant: 'destructive',
-      });
-    }
+    await signInWithPopup(auth, provider);
   };
 
-  // While checking auth state, or if user is found (and redirecting), show loader.
-  if (isUserLoading || user) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="mt-4 text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
+  if (isUserLoading) return <p>Loading...</p>;
 
-  // If loading is complete and there's no user, show the login page.
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
-      <Card className="w-full max-w-sm shadow-lg">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex items-center justify-center gap-2">
-            <CreatorIQLogo />
-            <CardTitle className="font-headline text-3xl">CreatorIQ</CardTitle>
-          </div>
-          <CardDescription>
-            Know your worth. Grow your earnings.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <Button onClick={handleSignInWithGoogle} variant="outline" className="w-full">
-              <GoogleIcon className="mr-2 h-5 w-5" />
-              Sign in with Google
-          </Button>
-        </CardContent>
-      </Card>
-      <p className="text-center text-xs text-muted-foreground mt-4">
-        This is a demo application.
-      </p>
-    </main>
+    <div className="flex h-screen flex-col items-center justify-center">
+      <button onClick={handleGoogleLogin} className="px-4 py-2 bg-blue-600 text-white rounded">
+        Sign in with Google
+      </button>
+    </div>
   );
 }
