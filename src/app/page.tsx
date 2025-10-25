@@ -67,10 +67,10 @@ export default function LandingPage() {
             <Link href="#contact" className="text-sm font-medium hover:text-primary transition-colors">Contact</Link>
           </nav>
           <div className='flex items-center gap-2'>
-            <Link href="/login" legacyBehavior>
+            <Link href="/login">
                 <Button variant='ghost'>Login</Button>
             </Link>
-            <Link href="/login" legacyBehavior>
+            <Link href="/login">
                 <Button>Get Started</Button>
             </Link>
           </div>
@@ -92,10 +92,10 @@ export default function LandingPage() {
                 CreatorIQ bridges the gap between creators and brands with data-driven insights, fair valuations, and seamless collaboration tools.
             </p>
             <div className="mt-8 flex justify-center gap-4">
-              <Link href="/login?role=creator" legacyBehavior>
+              <Link href="/login?role=creator">
                 <Button size="lg" className='bg-primary hover:bg-primary/90 text-primary-foreground'>I'm a Creator</Button>
               </Link>
-              <Link href="/login?role=brand" legacyBehavior>
+              <Link href="/login?role=brand">
                 <Button size="lg" variant="secondary" className='bg-secondary hover:bg-secondary/90 text-secondary-foreground'>I'm a Brand</Button>
               </Link>
             </div>

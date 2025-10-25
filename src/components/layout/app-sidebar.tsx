@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -63,7 +64,7 @@ export default function AppSidebar({ role }: { role: 'creator' | 'brand' }) {
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.label}>
-              <Link href={item.href} legacyBehavior passHref>
+              <Link href={item.href} passHref>
                 <SidebarMenuButton
                   isActive={pathname === item.href}
                   tooltip={item.label}
@@ -82,7 +83,7 @@ export default function AppSidebar({ role }: { role: 'creator' | 'brand' }) {
          <SidebarMenu>
             {bottomNavItems.map((item) => (
                 <SidebarMenuItem key={item.label}>
-                    <Link href={item.href} legacyBehavior passHref>
+                    <Link href={item.href} passHref>
                         <SidebarMenuButton
                         isActive={pathname === item.href}
                         tooltip={item.label}
