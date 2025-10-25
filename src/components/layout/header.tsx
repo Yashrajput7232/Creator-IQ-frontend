@@ -50,8 +50,7 @@ export default function Header({ role }: { role: 'creator' | 'brand' }) {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      const dashboardPath = role === 'brand' ? '/dashboard/brand' : '/dashboard/creator';
-      router.push(dashboardPath);
+      router.push('/');
     } catch (error) {
       console.error("Error signing out: ", error);
     }
