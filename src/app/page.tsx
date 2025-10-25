@@ -18,6 +18,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!isUserLoading && user) {
+      console.log('User already logged in, redirecting to dashboard.');
       router.push('/dashboard');
     }
   }, [user, isUserLoading, router]);
@@ -25,10 +26,14 @@ export default function LoginPage() {
   useEffect(() => {
     const handleRedirect = async () => {
       if (!auth || isUserLoading) return;
+      console.log('Checking for Google sign-in redirect result...');
       try {
         const result = await getRedirectResult(auth);
         if (result && result.user) {
+          console.log('Sign-in via redirect successful for:', result.user.displayName);
           router.push('/dashboard');
+        } else {
+            console.log('No active redirect operation found.');
         }
       } catch (error: any) {
         console.error('Error handling redirect result:', error);
@@ -45,11 +50,12 @@ export default function LoginPage() {
 
   const handleSignInWithGoogle = async () => {
     if (!auth) return;
+    console.log('Starting Google sign-in process...');
     const provider = new GoogleAuthProvider();
     try {
       await signInWithRedirect(auth, provider);
     } catch (error) {
-      console.error('Error signing in with Google', error);
+      console.error('Error starting Google sign-in redirect:', error);
       toast({
         title: 'Sign-in Error',
         description: 'Could not start the sign-in process. Please try again.',
@@ -62,7 +68,7 @@ export default function LoginPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="mt-4 text-muted-foreground">Redirecting to dashboard...</p>
+        <p className="mt-4 text-muted-foreground">Loading...</p>
       </div>
     );
   }

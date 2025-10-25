@@ -18,24 +18,36 @@ export const useUser = (): UserHookResult => {
 
   useEffect(() => {
     if (!auth) {
+      console.log('Auth service not available in useUser hook.');
       setIsUserLoading(false);
       setUserError(new Error("Auth service not available."));
       return;
     }
 
+    console.log('Setting up auth state listener.');
     const unsubscribe = onAuthStateChanged(
       auth,
       (firebaseUser) => {
-        setUser(firebaseUser);
+        if (firebaseUser) {
+          console.log('Auth state changed: User is signed in.', firebaseUser.uid);
+          setUser(firebaseUser);
+        } else {
+          console.log('Auth state changed: User is signed out.');
+          setUser(null);
+        }
         setIsUserLoading(false);
       },
       (error) => {
+        console.error('Auth state listener error:', error);
         setUserError(error);
         setIsUserLoading(false);
       }
     );
 
-    return () => unsubscribe();
+    return () => {
+      console.log('Cleaning up auth state listener.');
+      unsubscribe();
+    };
   }, [auth]);
 
   return { user, isUserLoading, userError };

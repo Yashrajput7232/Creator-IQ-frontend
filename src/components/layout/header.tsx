@@ -37,7 +37,9 @@ export default function Header() {
 
   const handleSignOut = async () => {
     if (!auth) return;
+    console.log('Signing out user...');
     await signOut(auth);
+    console.log('User signed out successfully.');
     router.push('/');
   };
 
