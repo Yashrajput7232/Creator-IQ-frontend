@@ -20,7 +20,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     }
   }, [user, isUserLoading, router]);
 
-  // While checking for the user, or if we are about to redirect, show a loading screen.
+  // While checking for the user, show a loading screen.
+  // We also check !user here because the useEffect for redirection might not have fired yet.
   if (isUserLoading || !user) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">

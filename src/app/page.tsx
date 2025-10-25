@@ -17,21 +17,21 @@ export default function LoginPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (user) {
+    if (!isUserLoading && user) {
       console.log('User is logged in, redirecting to dashboard.');
       router.push('/dashboard');
     }
-  }, [user, router]);
+  }, [user, isUserLoading, router]);
 
   useEffect(() => {
     const handleRedirect = async () => {
-      if (!auth || isUserLoading) return;
+      if (!auth || isUserLoading || user) return;
       console.log('Checking for Google sign-in redirect result...');
       try {
         const result = await getRedirectResult(auth);
         if (result && result.user) {
           console.log('Sign-in via redirect successful for:', result.user.displayName);
-          // The other useEffect will handle the redirect once the user state is set.
+          // The other useEffect will handle the redirect once the user state is updated by the onAuthStateChanged listener.
         } else {
             console.log('No active redirect operation found.');
         }
@@ -44,10 +44,8 @@ export default function LoginPage() {
         });
       }
     };
-    // Only handle redirect if we know there is no user yet.
-    if (!user) {
-        handleRedirect();
-    }
+    
+    handleRedirect();
   }, [auth, router, toast, isUserLoading, user]);
 
 
@@ -67,6 +65,7 @@ export default function LoginPage() {
     }
   };
 
+  // While checking auth state, or if user is found (and redirecting), show loader.
   if (isUserLoading || user) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">
@@ -76,6 +75,7 @@ export default function LoginPage() {
     );
   }
 
+  // If loading is complete and there's no user, show the login page.
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-sm shadow-lg">
