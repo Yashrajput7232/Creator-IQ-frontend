@@ -5,6 +5,10 @@ import { useAuth } from '@/firebase/provider';
 import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CreatorIQLogo, GoogleIcon } from '@/components/icons';
+import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const auth = useAuth();
@@ -32,21 +36,35 @@ export default function LoginPage() {
     }
   };
 
+  // While checking for the user, show a loading screen.
+  // This prevents briefly showing the login page before a redirect.
   if (isUserLoading || user) {
-    // Show a loading indicator while checking auth state or if user is found,
-    // to prevent briefly showing the login page before redirect.
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-        <p className="mt-4 text-muted-foreground">Loading...</p>
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="mt-4 text-muted-foreground">Loading your session...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center">
-      <button onClick={handleGoogleLogin} className="px-4 py-2 bg-blue-600 text-white rounded">
-        Sign in with Google
-      </button>
-    </div>
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
+      <Card className="w-full max-w-sm shadow-lg">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 flex items-center justify-center gap-2">
+            <CreatorIQLogo />
+            <span className="font-headline text-2xl font-semibold">CreatorIQ</span>
+          </div>
+          <CardTitle className="font-headline text-xl">Welcome Back</CardTitle>
+          <CardDescription>Sign in to access your dashboard.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button onClick={handleGoogleLogin} className="w-full" variant="outline">
+            <GoogleIcon className="mr-2 h-4 w-4" />
+            Sign in with Google
+          </Button>
+        </CardContent>
+      </Card>
+    </main>
   );
 }
