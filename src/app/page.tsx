@@ -24,7 +24,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     const handleRedirect = async () => {
-      if (!auth) return;
+      if (!auth || isUserLoading) return;
       try {
         const result = await getRedirectResult(auth);
         if (result && result.user) {
@@ -40,7 +40,7 @@ export default function LoginPage() {
       }
     };
     handleRedirect();
-  }, [auth, router, toast]);
+  }, [auth, router, toast, isUserLoading]);
 
 
   const handleSignInWithGoogle = async () => {
@@ -62,7 +62,7 @@ export default function LoginPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="mt-4 text-muted-foreground">Signing you in...</p>
+        <p className="mt-4 text-muted-foreground">Redirecting to dashboard...</p>
       </div>
     );
   }
