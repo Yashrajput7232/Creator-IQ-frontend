@@ -49,14 +49,15 @@ const bottomNavItems = [
 export default function AppSidebar({ role }: { role: 'creator' | 'brand' }) {
   const pathname = usePathname();
   const navItems = role === 'creator' ? creatorNavItems : brandNavItems;
+  const dashboardHome = role === 'creator' ? '/dashboard/creator' : '/dashboard/brand';
 
   return (
     <Sidebar>
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
+        <Link href={dashboardHome} className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
             <CreatorIQLogo />
             <span className="font-headline text-xl font-semibold group-data-[collapsible=icon]:hidden">CreatorIQ</span>
-        </div>
+        </Link>
       </SidebarHeader>
       <SidebarContent className="p-2">
         <SidebarMenu>
