@@ -163,6 +163,17 @@ export default function BrandReadinessPage() {
             </Card>
           </>
         )}
+        {!loading && !result && (
+            <div className='flex items-center justify-center h-full'>
+                <div className="text-center p-8">
+                    <Award className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <h3 className="mt-4 text-lg font-medium">Assess Your Readiness</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Adjust the sliders and calculate your brand readiness score.
+                    </p>
+                </div>
+            </div>
+        )}
       </div>
     </div>
   );

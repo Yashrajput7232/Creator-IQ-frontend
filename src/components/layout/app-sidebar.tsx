@@ -18,19 +18,27 @@ import {
   Settings,
   CircleHelp,
   Users,
+  Search,
+  Briefcase,
 } from 'lucide-react';
 import { CreatorIQLogo } from '@/components/icons';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Separator } from '../ui/separator';
 
-const navItems = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+const creatorNavItems = [
+  { href: '/dashboard/creator', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/dashboard/content-insights', icon: BotMessageSquare, label: 'Content Insights' },
   { href: '/dashboard/valuation', icon: DollarSign, label: 'Valuation' },
   { href: '/dashboard/brand-readiness', icon: Gauge, label: 'Brand Readiness' },
   { href: '/dashboard/deals', icon: Handshake, label: 'Deal Tracker' },
-  { href: '/dashboard/competitors', icon: Users, label: 'Find Competitor' },
+  { href: '/dashboard/competitors', icon: Users, label: 'Find Competitors' },
+];
+
+const brandNavItems = [
+    { href: '/dashboard/brand', icon: LayoutDashboard, label: 'Dashboard' },
+    { href: '/dashboard/brand/discover', icon: Search, label: 'Discover Creators' },
+    { href: '/dashboard/brand/campaigns', icon: Briefcase, label: 'Campaign Tracker' },
 ];
 
 const bottomNavItems = [
@@ -38,8 +46,9 @@ const bottomNavItems = [
     { href: '#', icon: CircleHelp, label: 'Help' },
 ]
 
-export default function AppSidebar() {
+export default function AppSidebar({ role }: { role: 'creator' | 'brand' }) {
   const pathname = usePathname();
+  const navItems = role === 'creator' ? creatorNavItems : brandNavItems;
 
   return (
     <Sidebar>
@@ -57,6 +66,7 @@ export default function AppSidebar() {
                 <SidebarMenuButton
                   isActive={pathname === item.href}
                   tooltip={item.label}
+                  className={role === 'brand' ? 'data-[active=true]:bg-secondary data-[active=true]:text-secondary-foreground' : ''}
                 >
                   <item.icon />
                   <span>{item.label}</span>
@@ -75,6 +85,7 @@ export default function AppSidebar() {
                         <SidebarMenuButton
                         isActive={pathname === item.href}
                         tooltip={item.label}
+                        className={role === 'brand' ? 'data-[active=true]:bg-secondary data-[active=true]:text-secondary-foreground' : ''}
                         >
                         <item.icon />
                         <span>{item.label}</span>

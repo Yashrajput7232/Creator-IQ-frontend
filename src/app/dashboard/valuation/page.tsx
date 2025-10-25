@@ -186,6 +186,17 @@ export default function ValuationPage() {
             </Card>
           </>
         )}
+         {!loading && !result && (
+            <div className='flex items-center justify-center h-full'>
+                <div className="text-center p-8">
+                    <Sparkles className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <h3 className="mt-4 text-lg font-medium">Get Your Valuation</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Fill out your profile details to see what you're worth.
+                    </p>
+                </div>
+            </div>
+        )}
       </div>
     </div>
   );
