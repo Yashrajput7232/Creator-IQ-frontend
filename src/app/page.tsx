@@ -17,11 +17,11 @@ export default function LoginPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!isUserLoading && user) {
-      console.log('User already logged in, redirecting to dashboard.');
+    if (user) {
+      console.log('User is logged in, redirecting to dashboard.');
       router.push('/dashboard');
     }
-  }, [user, isUserLoading, router]);
+  }, [user, router]);
 
   useEffect(() => {
     const handleRedirect = async () => {
@@ -31,7 +31,7 @@ export default function LoginPage() {
         const result = await getRedirectResult(auth);
         if (result && result.user) {
           console.log('Sign-in via redirect successful for:', result.user.displayName);
-          router.push('/dashboard');
+          // The other useEffect will handle the redirect once the user state is set.
         } else {
             console.log('No active redirect operation found.');
         }
@@ -44,8 +44,11 @@ export default function LoginPage() {
         });
       }
     };
-    handleRedirect();
-  }, [auth, router, toast, isUserLoading]);
+    // Only handle redirect if we know there is no user yet.
+    if (!user) {
+        handleRedirect();
+    }
+  }, [auth, router, toast, isUserLoading, user]);
 
 
   const handleSignInWithGoogle = async () => {
