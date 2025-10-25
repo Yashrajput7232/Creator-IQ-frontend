@@ -9,13 +9,14 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/firebase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/firebase';
+import { useEffect } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const role = searchParams.get('role') || 'creator';
   const { user, isUserLoading } = useUser();
+  const role = searchParams.get('role') || 'creator';
 
   const handleLogin = async () => {
     const provider = new GoogleAuthProvider();
@@ -34,13 +35,13 @@ export default function LoginPage() {
     }
   };
 
-  if (user && !isUserLoading) {
-     if (role === 'brand') {
-      router.replace('/dashboard/brand');
-    } else {
-      router.replace('/dashboard/creator');
+  useEffect(() => {
+    if (!isUserLoading && user) {
+      const targetDashboard = role === 'brand' ? '/dashboard/brand' : '/dashboard/creator';
+      router.replace(targetDashboard);
     }
-  }
+  }, [user, isUserLoading, role, router]);
+
 
   const isCreator = role === 'creator';
 
@@ -65,16 +66,16 @@ export default function LoginPage() {
           <CardContent className="space-y-4">
              <div className="flex w-full">
                 <Button
-                    onClick={() => router.replace('/login?role=creator')}
+                    onClick={() => router.push('/login?role=creator')}
                     variant={isCreator ? 'default' : 'ghost'}
                     className={`w-1/2 rounded-r-none ${isCreator ? 'data-[active=true]:bg-primary' : ''}`}
                 >
                     Creator
                 </Button>
                 <Button
-                    onClick={() => router.replace('/login?role=brand')}
+                    onClick={() => router.push('/login?role=brand')}
                     variant={!isCreator ? 'default' : 'ghost'}
-                    className={`w-1/2 rounded-l-none ${!isCreator ? 'data-[active=true]:bg-secondary' : ''}`}
+                    className={`w-1/2 rounded-l-none ${!isCreator ? 'bg-secondary' : ''}`}
                 >
                     Brand
                 </Button>

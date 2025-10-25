@@ -7,6 +7,7 @@ import { ArrowUpRight, Instagram, Users, Youtube, Clapperboard } from 'lucide-re
 import { platformComparisonData, engagementData, audienceDemographicsData } from '@/lib/mock-data';
 import { TikTokIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { useUser } from '@/firebase';
 
 const chartConfig = {
   views: {
@@ -27,10 +28,12 @@ const chartConfig = {
 };
 
 export default function CreatorDashboardPage() {
+  const { user } = useUser();
+
   return (
     <>
     <div className="flex justify-between items-center mb-6">
-        <h1 className="font-headline text-2xl">Hey, Alex Doe 👋 Here’s your performance summary.</h1>
+        <h1 className="font-headline text-2xl">Hey, {user?.displayName?.split(' ')[0] || 'Creator'} 👋 Here’s your performance summary.</h1>
     </div>
     <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
       <Card className="xl:col-span-3">

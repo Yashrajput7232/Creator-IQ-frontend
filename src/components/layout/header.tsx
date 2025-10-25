@@ -1,4 +1,3 @@
-
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
@@ -15,6 +14,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Bell } from 'lucide-react';
+import { useUser } from '@/firebase';
+import { auth } from '@/firebase/client';
+import { signOut } from 'firebase/auth';
 
 
 const pageTitles: { [key: string]: string } = {
@@ -42,17 +44,18 @@ const getInitials = (name?: string | null) => {
 export default function Header({ role }: { role: 'creator' | 'brand' }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { user } = useUser();
 
   const handleSignOut = async () => {
-    // Simulate sign out
-    console.log('Signing out...');
-    router.push('/login');
+    try {
+      await signOut(auth);
+      router.push('/login');
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
   };
 
-  const user = {
-      displayName: role === 'creator' ? 'Alex Doe' : 'BrandCo',
-      photoURL: null,
-  }
+  const displayName = user?.displayName || (role === 'creator' ? 'Creator' : 'Brand');
 
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6">
@@ -72,13 +75,13 @@ export default function Header({ role }: { role: 'creator' | 'brand' }) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user?.photoURL ?? undefined} alt={user?.displayName ?? 'User Avatar'} />
-                <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
+                <AvatarImage src={user?.photoURL ?? undefined} alt={displayName} />
+                <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>{user?.displayName || 'My Account'}</DropdownMenuLabel>
+            <DropdownMenuLabel>{displayName}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <Link href="/dashboard/settings" passHref>
               <DropdownMenuItem>Settings</DropdownMenuItem>
