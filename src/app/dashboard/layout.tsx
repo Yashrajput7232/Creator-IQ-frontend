@@ -13,14 +13,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    // If loading is finished and there's no user, redirect to login.
+    // Only redirect if loading is complete and there is definitively no user.
     if (!isUserLoading && !user) {
-      console.log('Dashboard: No user found, redirecting to login.');
+      console.log('Dashboard: No user found after loading, redirecting to login.');
       router.push('/');
     }
   }, [user, isUserLoading, router]);
 
-  // While checking for user, show a loading screen.
+  // While checking for the user, or if we are about to redirect, show a loading screen.
   if (isUserLoading || !user) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     );
   }
 
-  // If user is confirmed, render the dashboard layout.
+  // If loading is complete and a user exists, render the dashboard.
   return (
     <SidebarProvider>
       <AppSidebar />
