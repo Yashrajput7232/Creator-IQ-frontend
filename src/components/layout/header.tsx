@@ -1,7 +1,8 @@
 
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -14,43 +15,48 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Bell } from 'lucide-react';
-import { useAuth, useUser } from '@/firebase';
+import { useUser } from '@/firebase';
+import { auth } from '@/firebase/client';
 import { signOut } from 'firebase/auth';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+
 
 const pageTitles: { [key: string]: string } = {
-  '/dashboard': 'Dashboard',
+  '/dashboard/creator': 'Creator Dashboard',
   '/dashboard/content-insights': 'Content Insights',
   '/dashboard/valuation': 'Creator Valuation',
   '/dashboard/brand-readiness': 'Brand Readiness',
   '/dashboard/deals': 'Deal Tracker',
+  '/dashboard/competitors': 'Find Competitors',
+  '/dashboard/brand': 'Brand Dashboard',
+  '/dashboard/brand/discover': 'Discover Creators',
+  '/dashboard/brand/campaigns': 'Campaign Tracker',
   '/dashboard/settings': 'Settings',
-  '/dashboard/competitors': 'Find Competitor',
 };
 
-export default function Header() {
-  const pathname = usePathname();
-  const { user } = useUser();
-  const auth = useAuth();
-  const router = useRouter();
-
-  const handleSignOut = async () => {
-    if (!auth) return;
-    console.log('Signing out user...');
-    await signOut(auth);
-    console.log('User signed out successfully.');
-    router.push('/');
-  };
-
-  const getInitials = (name?: string | null) => {
+const getInitials = (name?: string | null) => {
     if (!name) return 'U';
     const names = name.split(' ');
     if (names.length > 1) {
       return `${names[0][0]}${names[names.length - 1][0]}`;
     }
     return name[0];
-  }
+}
+
+export default function Header({ role }: { role: 'creator' | 'brand' }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user } = useUser();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      router.push('/');
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+
+  const displayName = user?.displayName || (role === 'creator' ? 'Creator' : 'Brand');
 
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6">
@@ -70,15 +76,15 @@ export default function Header() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user?.photoURL ?? undefined} alt={user?.displayName ?? 'User Avatar'} />
-                <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
+                <AvatarImage src={user?.photoURL ?? undefined} alt={displayName} />
+                <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>{user?.displayName || 'My Account'}</DropdownMenuLabel>
+            <DropdownMenuLabel>{displayName}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Link href="/dashboard/settings" passHref>
+            <Link href="/dashboard/settings">
               <DropdownMenuItem>Settings</DropdownMenuItem>
             </Link>
             <DropdownMenuItem>Support</DropdownMenuItem>
@@ -86,6 +92,7 @@ export default function Header() {
             <DropdownMenuItem onClick={handleSignOut}>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        {role === 'creator' && <Button>Request Brand Collab</Button>}
       </div>
     </header>
   );

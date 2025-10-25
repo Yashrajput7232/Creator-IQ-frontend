@@ -1,26 +1,26 @@
 'use client';
 
-import React, { useMemo, type ReactNode } from 'react';
-import { FirebaseProvider } from '@/firebase/provider';
-import { initializeFirebase } from '@/firebase';
+import React, { createContext, useContext, type ReactNode } from 'react';
+import { useUser, type UserState } from './auth/use-user';
+import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 
-interface FirebaseClientProviderProps {
-  children: ReactNode;
-}
+const FirebaseContext = createContext<UserState | undefined>(undefined);
 
-export function FirebaseClientProvider({ children }: FirebaseClientProviderProps) {
-  const firebaseServices = useMemo(() => {
-    // Initialize Firebase on the client side, once per component mount.
-    return initializeFirebase();
-  }, []); // Empty dependency array ensures this runs only once on mount
+export function FirebaseClientProvider({ children }: { children: ReactNode }) {
+  const userState = useUser();
 
   return (
-    <FirebaseProvider
-      firebaseApp={firebaseServices.firebaseApp}
-      auth={firebaseServices.auth}
-      firestore={firebaseServices.firestore}
-    >
+    <FirebaseContext.Provider value={userState}>
+      <FirebaseErrorListener />
       {children}
-    </FirebaseProvider>
+    </FirebaseContext.Provider>
   );
 }
+
+export const useAuth = (): UserState => {
+  const context = useContext(FirebaseContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within a FirebaseClientProvider');
+  }
+  return context;
+};

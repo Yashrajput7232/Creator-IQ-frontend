@@ -147,6 +147,17 @@ export default function CompetitorsPage() {
             </CardContent>
           </Card>
         )}
+        {!loading && !result && (
+            <div className='md:col-span-2 flex items-center justify-center h-full'>
+                <div className="text-center p-8">
+                    <UserSearch className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <h3 className="mt-4 text-lg font-medium">Find Your Peers</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Enter your niche to discover competitors and see how you stack up.
+                    </p>
+                </div>
+            </div>
+        )}
       </div>
     </div>
   );

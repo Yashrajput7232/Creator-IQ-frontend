@@ -124,24 +124,34 @@ export default function ContentInsightsPage() {
       </div>
 
       <div className="md:col-span-2 space-y-8">
-        {result && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline flex items-center gap-2"><Bot /> AI-Powered Insights</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <h3 className="font-semibold mb-2">Analysis Summary</h3>
-                <p className="text-sm text-muted-foreground">{result.analysisSummary}</p>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">Recommendations</h3>
-                <ul className="list-disc list-inside space-y-1 text-sm">
-                  {result.recommendations.map((rec, i) => <li key={i}>{rec}</li>)}
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
+        {(loading || result) && (
+             <Card>
+                <CardHeader>
+                <CardTitle className="font-headline flex items-center gap-2"><Bot /> AI-Powered Insights</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {loading && (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                            <span>Generating insights...</span>
+                        </div>
+                    )}
+                    {result && (
+                        <>
+                        <div>
+                            <h3 className="font-semibold mb-2">Analysis Summary</h3>
+                            <p className="text-sm text-muted-foreground">{result.analysisSummary}</p>
+                        </div>
+                        <div>
+                            <h3 className="font-semibold mb-2">Recommendations</h3>
+                            <ul className="list-disc list-inside space-y-1 text-sm">
+                            {result.recommendations.map((rec, i) => <li key={i}>{rec}</li>)}
+                            </ul>
+                        </div>
+                        </>
+                    )}
+                </CardContent>
+            </Card>
         )}
 
         <Card>
