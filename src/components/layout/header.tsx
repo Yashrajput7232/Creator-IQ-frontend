@@ -50,7 +50,8 @@ export default function Header({ role }: { role: 'creator' | 'brand' }) {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      router.push('/');
+      const dashboardPath = role === 'brand' ? '/dashboard/brand' : '/dashboard/creator';
+      router.push(dashboardPath);
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -84,7 +85,7 @@ export default function Header({ role }: { role: 'creator' | 'brand' }) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>{displayName}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Link href="/dashboard/settings" passHref>
+            <Link href="/dashboard/settings">
               <DropdownMenuItem>Settings</DropdownMenuItem>
             </Link>
             <DropdownMenuItem>Support</DropdownMenuItem>
