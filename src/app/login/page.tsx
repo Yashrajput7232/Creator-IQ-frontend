@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CreatorIQLogo, GoogleIcon } from '@/components/icons';
 import { motion } from 'framer-motion';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { auth } from '@/firebase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/firebase';
@@ -21,17 +21,16 @@ export default function LoginPage() {
   const handleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      // The redirect will be handled by the effect below
+      await signInWithRedirect(auth, provider);
+      // Firebase will handle the redirect. After the user signs in,
+      // they will be redirected back to this page, and the useEffect below will handle the rest.
     } catch (error: any) {
-      if (error.code !== 'auth/popup-closed-by-user') {
         console.error("Firebase login error:", error);
         toast({
             title: "Login Failed",
-            description: "Could not sign in with Google. Please try again.",
+            description: "Could not initiate sign in with Google. Please try again.",
             variant: "destructive",
         });
-      }
     }
   };
 
