@@ -13,16 +13,34 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!isUserLoading && user) {
+      console.log('Login page: User found, redirecting to dashboard.');
       router.push('/dashboard');
     }
   }, [user, isUserLoading, router]);
 
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error: any) {
+      if (error.code === 'auth/popup-closed-by-user') {
+        console.log('Sign-in popup closed by user.');
+        return;
+      }
+      // Handle other errors if necessary
+      console.error('An error occurred during sign-in:', error);
+    }
   };
 
-  if (isUserLoading) return <p>Loading...</p>;
+  if (isUserLoading || user) {
+    // Show a loading indicator while checking auth state or if user is found,
+    // to prevent briefly showing the login page before redirect.
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+        <p className="mt-4 text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen flex-col items-center justify-center">
