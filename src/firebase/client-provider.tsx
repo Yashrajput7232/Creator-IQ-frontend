@@ -1,8 +1,26 @@
 'use client';
 
-import React, { type ReactNode } from 'react';
+import React, { createContext, useContext, type ReactNode } from 'react';
+import { useUser, type UserState } from './auth/use-user';
+import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 
-// This is now a simple pass-through provider since we removed Firebase auth for the MVP.
+const FirebaseContext = createContext<UserState | undefined>(undefined);
+
 export function FirebaseClientProvider({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  const userState = useUser();
+
+  return (
+    <FirebaseContext.Provider value={userState}>
+      <FirebaseErrorListener />
+      {children}
+    </FirebaseContext.Provider>
+  );
 }
+
+export const useAuth = (): UserState => {
+  const context = useContext(FirebaseContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within a FirebaseClientProvider');
+  }
+  return context;
+};

@@ -5,20 +5,42 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CreatorIQLogo, GoogleIcon } from '@/components/icons';
 import { motion } from 'framer-motion';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '@/firebase/client';
+import { useToast } from '@/hooks/use-toast';
+import { useUser } from '@/firebase';
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const role = searchParams.get('role') || 'creator';
+  const { user, isUserLoading } = useUser();
 
-  const handleLogin = () => {
-    // Simulate a login
-    if (role === 'brand') {
-      router.push('/dashboard/brand');
-    } else {
-      router.push('/dashboard/creator');
+  const handleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      // The redirect will be handled by the effect below
+    } catch (error: any) {
+      if (error.code !== 'auth/popup-closed-by-user') {
+        console.error("Firebase login error:", error);
+        toast({
+            title: "Login Failed",
+            description: "Could not sign in with Google. Please try again.",
+            variant: "destructive",
+        });
+      }
     }
   };
+
+  if (user && !isUserLoading) {
+     if (role === 'brand') {
+      router.replace('/dashboard/brand');
+    } else {
+      router.replace('/dashboard/creator');
+    }
+  }
 
   const isCreator = role === 'creator';
 
@@ -45,14 +67,14 @@ export default function LoginPage() {
                 <Button
                     onClick={() => router.replace('/login?role=creator')}
                     variant={isCreator ? 'default' : 'ghost'}
-                    className={`w-1/2 rounded-r-none ${isCreator ? 'bg-blue-600' : ''}`}
+                    className={`w-1/2 rounded-r-none ${isCreator ? 'data-[active=true]:bg-primary' : ''}`}
                 >
                     Creator
                 </Button>
                 <Button
                     onClick={() => router.replace('/login?role=brand')}
                     variant={!isCreator ? 'default' : 'ghost'}
-                    className={`w-1/2 rounded-l-none ${!isCreator ? 'bg-purple-600' : ''}`}
+                    className={`w-1/2 rounded-l-none ${!isCreator ? 'data-[active=true]:bg-secondary' : ''}`}
                 >
                     Brand
                 </Button>

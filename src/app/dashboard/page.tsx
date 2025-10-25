@@ -1,13 +1,19 @@
-// This file is now a redirector
 'use client';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/firebase';
 
 export default function DashboardRedirectPage() {
   const router = useRouter();
-  useEffect(() => {
-    router.replace('/dashboard/creator');
-  }, [router]);
+  const { user, isUserLoading } = useUser();
 
-  return null; // Or a loading spinner
+  useEffect(() => {
+    if (!isUserLoading && user) {
+        // Default to creator dashboard if no specific role is determined yet
+        router.replace('/dashboard/creator');
+    }
+  }, [router, user, isUserLoading]);
+
+  // You can show a loading spinner here while the redirect is happening
+  return null;
 }

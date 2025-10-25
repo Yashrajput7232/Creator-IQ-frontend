@@ -1,2 +1,4 @@
-// This file is no longer needed because we are simulating login.
-// All real auth logic has been removed.
+// Barrel file for easy imports
+
+export { useUser } from './auth/use-user';
+export { useAuth, FirebaseClientProvider } from './client-provider';

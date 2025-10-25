@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { CreatorIQLogo, TikTokIcon } from '@/components/icons';
-import Image from 'next/image';
 import {
   FileText,
   BarChart,
@@ -94,17 +93,17 @@ export default function LandingPage() {
             </p>
             <div className="mt-8 flex justify-center gap-4">
               <Link href="/login?role=creator" legacyBehavior>
-                <Button size="lg" className='bg-blue-600 hover:bg-blue-700 text-white'>I'm a Creator</Button>
+                <Button size="lg" className='bg-primary hover:bg-primary/90 text-primary-foreground'>I'm a Creator</Button>
               </Link>
               <Link href="/login?role=brand" legacyBehavior>
-                <Button size="lg" variant="secondary" className='bg-purple-600 hover:bg-purple-700 text-white'>I'm a Brand</Button>
+                <Button size="lg" variant="secondary" className='bg-secondary hover:bg-secondary/90 text-secondary-foreground'>I'm a Brand</Button>
               </Link>
             </div>
           </motion.div>
         </section>
 
         {/* Features Section */}
-        <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
+        <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -159,7 +158,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer id="contact" className="bg-secondary border-t">
+      <footer id="contact" className="bg-muted border-t">
         <div className="container mx-auto px-4 md:px-6 py-8 flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center gap-2">
                 <CreatorIQLogo className="h-6 w-6" />
